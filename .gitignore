@@ -10,10 +10,11 @@ models/r-net/mysql_test.py
 test/_trial_temp/*
 
 # data files
-models/r_net/data/*
-models/r_net/log/*
-*.pem
-nucleus-key-1.pem
+
+#model
+experiments/models/*
+*.jpg
+*.model
 
 # C extensions
 *.so
@@ -69,23 +70,6 @@ coverage.xml
 *.mo
 *.pot
 
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -122,19 +106,4 @@ lib/
 untitled.sublime-workspace
 pip-selfcheck.json
 untitled.sublime-project
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
 
