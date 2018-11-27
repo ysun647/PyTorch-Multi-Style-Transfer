@@ -58,24 +58,30 @@ def gram_matrix(y):
     return gram
 
 
-def subtract_imagenet_mean_batch(batch):
+def subtract_imagenet_mean_batch(batch, is_cuda=False):
     """Subtract ImageNet mean pixel-wise from a BGR image."""
     tensortype = type(batch.data)
     mean = tensortype(batch.data.size())
     mean[:, 0, :, :] = 103.939
     mean[:, 1, :, :] = 116.779
     mean[:, 2, :, :] = 123.680
-    return batch - Variable(mean)
+    res = batch - Variable(mean)
+    if is_cuda:
+        res.cuda()
+    return res
 
 
-def add_imagenet_mean_batch(batch):
+def add_imagenet_mean_batch(batch, is_cuda=False):
     """Add ImageNet mean pixel-wise from a BGR image."""
     tensortype = type(batch.data)
     mean = tensortype(batch.data.size())
     mean[:, 0, :, :] = 103.939
     mean[:, 1, :, :] = 116.779
     mean[:, 2, :, :] = 123.680
-    return batch + Variable(mean)
+    res = batch + Variable(mean)
+    if is_cuda:
+        res.cuda()
+    return res.cuda()
 
 def imagenet_clamp_batch(batch, low, high):
     batch[:,0,:,:].data.clamp_(low-103.939, high-103.939)
