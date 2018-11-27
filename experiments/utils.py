@@ -67,10 +67,9 @@ def subtract_imagenet_mean_batch(batch, is_cuda=False):
     mean[:, 2, :, :] = 123.680
     print("Type of batch", type(batch))
     print("Type of variable mean", type(Variable(mean)))
-    res = batch - Variable(mean)
     if is_cuda:
-        res.cuda()
-    return res
+        return batch.cuda() - Variable(mean).cuda()
+    return batch - Variable(mean)
 
 
 def add_imagenet_mean_batch(batch, is_cuda=False):
@@ -80,10 +79,9 @@ def add_imagenet_mean_batch(batch, is_cuda=False):
     mean[:, 0, :, :] = 103.939
     mean[:, 1, :, :] = 116.779
     mean[:, 2, :, :] = 123.680
-    res = batch + Variable(mean)
     if is_cuda:
-        res.cuda()
-    return res.cuda()
+        return batch.cuda() + Variable(mean).cuda()
+    return batch + Variable(mean)
 
 def imagenet_clamp_batch(batch, low, high):
     batch[:,0,:,:].data.clamp_(low-103.939, high-103.939)
