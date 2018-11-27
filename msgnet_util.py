@@ -1,8 +1,9 @@
 import numpy as np
 import torch
-
 import os
 from PIL import Image
+import random
+import string
 
 
 def tensor_load_rgbimage(filename, size=None, scale=None, keep_asp=False):
@@ -43,3 +44,6 @@ def preprocess_batch(batch):
     batch = torch.cat((b, g, r))
     batch = batch.transpose(0, 1)
     return batch
+
+def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
