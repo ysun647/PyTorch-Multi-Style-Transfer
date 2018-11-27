@@ -65,6 +65,8 @@ def subtract_imagenet_mean_batch(batch, is_cuda=False):
     mean[:, 0, :, :] = 103.939
     mean[:, 1, :, :] = 116.779
     mean[:, 2, :, :] = 123.680
+    print("Type of batch", type(batch))
+    print("Type of variable mean", type(Variable(mean)))
     res = batch - Variable(mean)
     if is_cuda:
         res.cuda()
