@@ -1,7 +1,8 @@
-from msgnet_models import *
-from msgnet_util import *
+from msgnet_models import Net, Variable
+from msgnet_util import tensor_load_rgbimage, preprocess_batch, tensor_save_bgrimage, id_generator
+import torch
 import argparse
-import os
+import os, random
 
 MODEL_PATH = '21styles.model'
 
@@ -26,12 +27,26 @@ def transfer_single_image(source_img, style_img, target_img):
 	tensor_save_bgrimage(output.data[0], target_img, False)
 
 
-def transfer_multi_image(source_dir, style_img, target_dir, style):
+def transfer_multi_image(source_dir, style_dir, target_dir, num):
 	if not os.path.exists(target_dir):
 		os.makedirs(target_dir)
 	for img in os.listdir(source_dir):
 		if img.endswith(".jpg"):
-			transfer_single_image(os.path.join(source_dir, img), style_img, os.path.join(target_dir, style+"-"+img))
+			style_img = ""
+			# print(os.listdir(source_dir))
+			# print(os.listdir(style_dir))
+			assert any(s.endswith(".jpg") for s in os.listdir(style_dir))
+			while not style_img.endswith(".jpg"):
+				style_img = random.choice(os.listdir(style_dir))
+			target_img = os.path.join(target_dir, img + "--" + style_img[:-4] + "--" + id_generator(4) + ".jpg")
+			source_img = os.path.join(source_dir, img)
+			style_img = os.path.join(style_dir, style_img)
+			transfer_single_image(source_img,
+														style_img,
+														target_img)
+			num -= 1
+			if num <= 0:
+				break
 
 
 
@@ -39,22 +54,25 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--mode")
 	parser.add_argument("--src")
-	parser.add_argument("--style_pic")
-	parser.add_argument("--tgt")
 	parser.add_argument("--style")
+	parser.add_argument("--tgt")
+	parser.add_argument("--num", type=int)
 	args = parser.parse_args()
 	if args.mode == "single":
-		# sample usage: $ python msgnet_transfer.py --mode single --src candy.jpg --style_pic venice-boat.jpg --tgt sym_output.jpg
-		transfer_single_image(source_img=args.src, style_img=args.style_pic, target_img=args.tgt)
+		# sample usage: $ python msgnet_transfer.py --mode single --src candy.jpg --style venice-boat.jpg --tgt sym_output.jpg
+		transfer_single_image(source_img=args.src, style_img=args.style, target_img=args.tgt)
 	elif args.mode == "multi":
 		'''
 		python msgnet_transfer.py \
 		  --mode multi \
 		  --src /Users/yiming/dev/data/pic/realism \
-		  --style_pic /Users/yiming/dev/data/pic/post-imp/post-imp.jpg \
+		  --style <the-dir-that-stores-style-image> \
 		  --tgt /Users/yiming/dev/data/pic/realism-postimp-result \
-		  --style postimp
+		  --num <how-many-pic-you-want-to-transfer>
 		'''
-		transfer_multi_image(source_dir=args.src, style_img=args.style_pic, target_dir=args.tgt, style=args.style)
+		transfer_multi_image(source_dir=args.src,
+												 style_dir=args.style,
+												 target_dir=args.tgt,
+												 num=args.num)
 	else:
 		raise ValueError("unknown mode: %s" % args.mode)
