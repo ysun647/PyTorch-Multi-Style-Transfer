@@ -177,7 +177,8 @@ def train(args):
 
             style_loss = 0.
             for m in range(len(features_y)):
-                gram_y = utils.gram_matrix(features_y[m])
+                gram_y_ = utils.gram_matrix(features_y[m])
+                gram_y = gram_y_.view(gram_y_.shape[0], 1, gram_y_.shape[1], gram_y_.shape[2])
                 gram_s = Variable(gram_style[m].data, requires_grad=False).repeat(args.batch_size, 1, 1, 1)
                 style_loss += args.style_weight * mse_loss(gram_y, gram_s[:n_batch, :, :])
 
