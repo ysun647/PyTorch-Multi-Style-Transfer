@@ -14,7 +14,8 @@ if __name__ == "__main__":
     for img in os.listdir(src_dir):
         if img.endswith(".jpg"):
             src_img = os.path.join(src_dir, img)
-            os.system("sudo cp %s %s" % (src_img, dst_dir))
+            dst_img = os.path.join(dst_dir, img)
+            os.system("sudo cp %s %s" % (src_img, dst_img))
             num -= 1
             if num <= 0:
                 break
