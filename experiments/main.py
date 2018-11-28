@@ -139,7 +139,7 @@ def train(args):
         style_model.cuda()
         vgg.cuda()
 
-    style_loader = utils.StyleLoader(args.style_folder, args.style_size)
+    style_loader = utils.StyleLoader(args.style_folder, args.style_size, args.cuda)
 
     tbar = trange(args.epochs)
     for e in tbar:
