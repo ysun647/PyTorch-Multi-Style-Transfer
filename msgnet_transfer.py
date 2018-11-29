@@ -36,7 +36,7 @@ def transfer_multi_image(source_dir, style_dir, target_dir, num, model_path, pri
             assert any(s.endswith(".jpg") for s in os.listdir(style_dir))
             while not style_img.endswith(".jpg"):
                 style_img = random.choice(os.listdir(style_dir))
-            target_img = os.path.join(target_dir, img + "--" + style_img[:-4] + "--" + id_generator(4) + ".jpg")
+            target_img = os.path.join(target_dir, img[:-4] + "--" + style_img[:-4] + "--" + id_generator(4) + ".jpg")
             source_img = os.path.join(source_dir, img)
             style_img = os.path.join(style_dir, style_img)
             transfer_single_image(source_img,

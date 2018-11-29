@@ -16,6 +16,7 @@ test/_trial_temp/*
 experiments/models/*
 *.jpg
 *.model
+draft.py
 
 # C extensions
 *.so
