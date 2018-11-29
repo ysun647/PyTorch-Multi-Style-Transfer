@@ -17,30 +17,39 @@ train_sample_num = 10
 val_sample_num = 90
 
 def main(args):
+    global img_width
     if args.img_width is not None:
         img_width = args.img_width
     
+    global img_height
     if args.img_height is not None:
         img_height = args.img_height
     
+    global train_dir
     if args.train_dir is not None:
         train_dir = args.train_dir
     
+    global val_dir
     if args.val_dir is not None:
         val_dir = args.val_dir
     
+    global epochs
     if args.epochs is not None:
         epochs = args.epochs
     
+    global batch_size
     if args.batch_size is not None:
         batch_size = args.batch_size
     
+    global model_save_dir
     if args.model_save_dir is not None:
         model_save_dir = args.model_save_dir
-        
+    
+    global train_sample_num
     if args.train_sample_num is not None:
         train_sample_num = args.train_sample_num
         
+    global val_sample_num
     if args.val_sample_num is not None:
         val_sample_num = args.val_sample_num
     
@@ -83,21 +92,23 @@ def main(args):
     train_generator = train_datagen.flow_from_directory(
         train_dir,
         target_size=(img_width, img_height),
-        batch_size=batch_size,
+        batch_size=1,
+        save_to_dir='/Users/yiming/Downloads/trainsave',
         class_mode='binary')
     
     validation_generator = test_datagen.flow_from_directory(
         val_dir,
         target_size=(img_width, img_height),
-        batch_size=batch_size,
+        batch_size=1,
+        save_to_dir='/Users/yiming/Downloads/valsave',
         class_mode='binary')
     
     model.fit_generator(
         train_generator,
-        steps_per_epoch=train_sample_num // batch_size,
+        steps_per_epoch=10,
         epochs=epochs,
         validation_data=validation_generator,
-        validation_steps=val_sample_num // batch_size)
+        validation_steps=10)
     
     model.save_weights(model_save_dir)
     
