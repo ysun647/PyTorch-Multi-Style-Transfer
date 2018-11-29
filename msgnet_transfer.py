@@ -46,7 +46,7 @@ def transfer_multi_image(source_dir, style_dir, target_dir, num, model_path, pri
             num -= 1
             
             if num % print_every == 0:
-                print(print_every, " pics left")
+                print(str(num), " pics left")
             
             if num <= 0:
                 break
