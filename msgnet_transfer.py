@@ -25,7 +25,7 @@ def transfer_single_image(source_img, style_img, target_img, model_path='21style
     tensor_save_bgrimage(output.data[0], target_img, False)
 
 
-def transfer_multi_image(source_dir, style_dir, target_dir, num, model_path):
+def transfer_multi_image(source_dir, style_dir, target_dir, num, model_path, print_every=20):
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
     for img in os.listdir(source_dir):
@@ -44,6 +44,10 @@ def transfer_multi_image(source_dir, style_dir, target_dir, num, model_path):
                                   target_img,
                                   model_path=model_path)
             num -= 1
+            
+            if num % print_every == 0:
+                print(print_every, " pics left")
+            
             if num <= 0:
                 break
 
@@ -57,6 +61,7 @@ if __name__ == "__main__":
     parser.add_argument("--tgt")
     parser.add_argument("--model_path")
     parser.add_argument("--num", type=int)
+    parser.add_argument("--print_every", type=int, default=20)
     args = parser.parse_args()
     if args.mode == "single":
         # sample usage: $ python msgnet_transfer.py --mode single --src candy.jpg --style venice-boat.jpg --tgt sym_output.jpg
@@ -78,7 +83,8 @@ if __name__ == "__main__":
                              style_dir=args.style,
                              target_dir=args.tgt,
                              num=args.num,
-                             model_path=args.model_path)
+                             model_path=args.model_path,
+                             print_every=args.print_every)
     else:
         raise ValueError("unknown mode: %s" % args.mode)
     
