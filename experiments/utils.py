@@ -65,7 +65,13 @@ def subtract_imagenet_mean_batch(batch, is_cuda=False):
     mean[:, 0, :, :] = 103.939
     mean[:, 1, :, :] = 116.779
     mean[:, 2, :, :] = 123.680
+
     return batch - Variable(mean)
+
+    if is_cuda:
+        return batch.cuda() - Variable(mean).cuda()
+    return batch - Variable(mean)
+
 
 def add_imagenet_mean_batch(batch, is_cuda=False):
     """Add ImageNet mean pixel-wise from a BGR image."""
@@ -74,6 +80,8 @@ def add_imagenet_mean_batch(batch, is_cuda=False):
     mean[:, 0, :, :] = 103.939
     mean[:, 1, :, :] = 116.779
     mean[:, 2, :, :] = 123.680
+    if is_cuda:
+        return batch.cuda() + Variable(mean).cuda()
     return batch + Variable(mean)
 
 def imagenet_clamp_batch(batch, low, high):
