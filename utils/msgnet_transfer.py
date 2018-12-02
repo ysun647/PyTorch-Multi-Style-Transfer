@@ -1,8 +1,10 @@
-from msgnet_models import Net, Variable
-from msgnet_util import tensor_load_rgbimage, preprocess_batch, tensor_save_bgrimage, id_generator
+from utils.msgnet_models import Net, Variable
+from utils.msgnet_util import tensor_load_rgbimage, preprocess_batch, tensor_save_bgrimage, id_generator
 import torch
 import argparse
-import os, random
+import os
+import random
+from datetime import datetime
 
 def transfer_single_image(source_img, style_img, target_img, model_path='21styles.model'):
     content_image = tensor_load_rgbimage(source_img, size=512, keep_asp=True).unsqueeze(0)
@@ -31,8 +33,6 @@ def transfer_multi_image(source_dir, style_dir, target_dir, num, model_path, pri
     for img in os.listdir(source_dir):
         if img.endswith(".jpg"):
             style_img = ""
-            # print(os.listdir(source_dir))
-            # print(os.listdir(style_dir))
             assert any(s.endswith(".jpg") for s in os.listdir(style_dir))
             while not style_img.endswith(".jpg"):
                 style_img = random.choice(os.listdir(style_dir))
@@ -46,7 +46,7 @@ def transfer_multi_image(source_dir, style_dir, target_dir, num, model_path, pri
             num -= 1
             
             if num % print_every == 0:
-                print(str(num), " pics left")
+                print("{} pics left; {}".format(str(num), datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
             
             if num <= 0:
                 break
