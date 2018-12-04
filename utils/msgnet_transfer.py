@@ -1,5 +1,5 @@
-from .utils.msgnet_models import Net, Variable
-from .utils.msgnet_util import tensor_load_rgbimage, preprocess_batch, tensor_save_bgrimage, id_generator
+from msgnet_models import Net, Variable
+from msgnet_util import tensor_load_rgbimage, preprocess_batch, tensor_save_bgrimage, id_generator
 import torch
 import argparse
 import os
