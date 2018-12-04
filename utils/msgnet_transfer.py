@@ -1,5 +1,5 @@
-from utils.msgnet_models import Net, Variable
-from utils.msgnet_util import tensor_load_rgbimage, preprocess_batch, tensor_save_bgrimage, id_generator
+from msgnet_models import Net, Variable
+from msgnet_util import tensor_load_rgbimage, preprocess_batch, tensor_save_bgrimage, id_generator
 import torch
 import argparse
 import os
@@ -30,10 +30,10 @@ def transfer_single_image(source_img, style_img, target_img, model_path='21style
 def transfer_multi_image(source_dir, style_dir, target_dir, num, model_path, print_every=20):
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
+    assert any(s.endswith(".jpg") for s in os.listdir(style_dir))
     for img in os.listdir(source_dir):
         if img.endswith(".jpg"):
             style_img = ""
-            assert any(s.endswith(".jpg") for s in os.listdir(style_dir))
             while not style_img.endswith(".jpg"):
                 style_img = random.choice(os.listdir(style_dir))
             target_img = os.path.join(target_dir, img[:-4] + "--" + style_img[:-4] + "--" + id_generator(4) + ".jpg")
