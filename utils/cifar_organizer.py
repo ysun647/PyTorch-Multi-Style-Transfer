@@ -10,11 +10,6 @@ if __name__ == '__main__':
     parser.add_argument("--train_dir")
     parser.add_argument("--val_dir")
     args = parser.parse_args()
-    print(args.train_ratio)
-    print(args.src_dir)
-    print(args.info_file)
-    print(args.train_dir)
-    print(args.val_dir)
     with open(args.info_file, 'r') as f:
         next(f)
         for line in f:
@@ -24,14 +19,14 @@ if __name__ == '__main__':
             
             rand = random.random()
             if rand < args.train_ratio:
-                tgt_dir = os.path.join(parser.train_dir, label)
+                tgt_dir = os.path.join(args.train_dir, label)
             else:
-                tgt_dir = os.path.join(parser.val_dir, label)
+                tgt_dir = os.path.join(args.val_dir, label)
             
             if not os.path.exists(tgt_dir):
                 os.makedirs(tgt_dir)
             
-            src_img = os.path.join(parser.src_dir, num+'.png')
+            src_img = os.path.join(args.src_dir, num+'.png')
             os.system("sudo cp {src_img} {tgt_dir}".format(src_img=src_img, tgt_dir=tgt_dir))
             
             if int(num) % 100 == 0:
