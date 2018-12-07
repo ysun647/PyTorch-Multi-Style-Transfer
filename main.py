@@ -92,8 +92,7 @@ def main(args):
     train_generator = train_datagen.flow_from_directory(
         train_dir,
         target_size=(img_width, img_height),
-        batch_size=1
-        :,
+        batch_size=1,
         save_to_dir='/Users/yiming/Downloads/trainsave',
         class_mode='binary')
     
