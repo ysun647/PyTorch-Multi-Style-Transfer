@@ -17,6 +17,7 @@ experiments/models/*
 *.jpg
 *.model
 draft.py
+Classification_draft.ipynb
 
 # C extensions
 *.so
