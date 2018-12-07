@@ -10,6 +10,11 @@ if __name__ == '__main__':
     parser.add_argument("--train_dir")
     parser.add_argument("--val_dir")
     args = parser.parse_args()
+    print(args.train_ratio)
+    print(args.src_dir)
+    print(args.info_file)
+    print(args.train_dir)
+    print(args.val_dir)
     with open(args.info_file, 'r') as f:
         next(f)
         for line in f:
