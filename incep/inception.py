@@ -117,17 +117,16 @@ def train(model, trainloader, testloader, batch_size, num_epoch, criterion, opti
         print("****************** Begin training epoch: {} ********************".format(epoch + 1))
         
         train_logs = train_one_epo(model, trainloader, criterion, optimizer, log_step, device=device)
+        
+        test_logs = test(model, testloader, num_classes, classes=classes, device=device)
+        for k, v in train_logs.items():
+            logs["trn_metrics"][k].append(v)
+            
+        for k, v in test_logs.items():
+            logs["tst_metrics"][k].append(v)
+            
         if (epoch + 1) % save_step == 0:
-            test_logs = test(model, testloader, num_classes, classes=classes, device=device)
-            
             save_model(model, os.path.join(model_save_dir, "ANet_no_pre_{}.pt".format(epoch)))
-            
-            for k, v in train_logs.items():
-                logs["trn_metrics"][k].append(v)
-            
-            for k, v in test_logs.items():
-                logs["tst_metrics"][k].append(v)
-            
             save_log(logs, os.path.join(log_save_dir, 'log_ANet_no_pre.json'))
     
     print('Finished Training')
