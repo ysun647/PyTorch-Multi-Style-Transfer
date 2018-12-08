@@ -36,6 +36,7 @@ def transfer_multi_image(source_dir, style_dir, target_dir, num, model_path, pri
         label_tgt_dir = os.path.join(target_dir, label)
         os.makedirs(label_tgt_dir)
         i = 0
+        total = len(os.listdir(label_dir))
         for img in os.listdir(label_dir):
             if not img.endswith(".png"): continue
             style_imgs = random.sample(os.listdir(style_dir), num)
@@ -49,7 +50,7 @@ def transfer_multi_image(source_dir, style_dir, target_dir, num, model_path, pri
                                       model_path=model_path)
             i += 1
             if i % print_every == 0:
-                print("{} pics done; {}".format(str(num), datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+                print("{} pics done; total: {}; {}".format(str(num), total, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 
 
 if __name__ == "__main__":
