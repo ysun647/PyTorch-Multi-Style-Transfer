@@ -35,6 +35,7 @@ def transfer_multi_image(source_dir, style_dir, target_dir, num, model_path, pri
         if not os.path.isdir(label_dir):continue
         label_tgt_dir = os.path.join(target_dir, label)
         os.makedirs(label_tgt_dir)
+        i = 0
         for img in os.listdir(label_dir):
             if not img.endswith(".png"): continue
             style_imgs = random.sample(os.listdir(style_dir), num)
@@ -46,6 +47,9 @@ def transfer_multi_image(source_dir, style_dir, target_dir, num, model_path, pri
                                       style_img,
                                       target_img,
                                       model_path=model_path)
+            i += 1
+            if i % print_every == 0:
+                print("{} pics done; {}".format(str(num), datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 
 
 if __name__ == "__main__":
@@ -66,7 +70,7 @@ if __name__ == "__main__":
                               model_path=args.model_path)
     elif args.mode == "multi":
         '''
-        python msgnet_transfer.py \
+        python cifar_transfer.py \
           --mode multi \
           --src /data/cifar/train \
           --style /home/ys3031/PyTorch-Multi-Style-Transfer/experiments/images/21styles \
