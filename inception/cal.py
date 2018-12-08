@@ -59,7 +59,7 @@ print("Total number of categories: {}".format(classes))
 
 
 
-net = torchvision.models.inception_v3(pretrained=False, num_classes=num_output)
+net = torchvision.models.inception_v3(pretrained=False, aux_logits=False, num_classes=num_output)
 
 def train_one_epo(model, dataloader, criterion, optimizer, log_step, device="cuda"):
 
