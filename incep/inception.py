@@ -106,7 +106,7 @@ def save_log(log, path):
 
 
 def train(model, trainloader, testloader, batch_size, num_epoch, criterion, optimizer, log_step, num_classes, classes,
-          model_save_dir, log_save_dir, device="cuda"):
+          model_save_dir, log_save_dir, device="cuda", save_step=160):
     model.to(device)
     
     logs = {"trn_metrics": {"train_loss": [], "train_accu": []}, "tst_metrics": {"test_accu": []},
@@ -117,17 +117,18 @@ def train(model, trainloader, testloader, batch_size, num_epoch, criterion, opti
         print("****************** Begin training epoch: {} ********************".format(epoch + 1))
         
         train_logs = train_one_epo(model, trainloader, criterion, optimizer, log_step, device=device)
-        test_logs = test(model, testloader, num_classes, classes=classes, device=device)
-        
-        save_model(model, os.path.join(model_save_dir, "ANet_no_pre_{}.pt".format(epoch)))
-        
-        for k, v in train_logs.items():
-            logs["trn_metrics"][k].append(v)
-        
-        for k, v in test_logs.items():
-            logs["tst_metrics"][k].append(v)
-        
-        save_log(logs, os.path.join(log_save_dir, 'log_ANet_no_pre.json'))
+        if (epoch + 1) % save_step == 0:
+            test_logs = test(model, testloader, num_classes, classes=classes, device=device)
+            
+            save_model(model, os.path.join(model_save_dir, "ANet_no_pre_{}.pt".format(epoch)))
+            
+            for k, v in train_logs.items():
+                logs["trn_metrics"][k].append(v)
+            
+            for k, v in test_logs.items():
+                logs["tst_metrics"][k].append(v)
+            
+            save_log(logs, os.path.join(log_save_dir, 'log_ANet_no_pre.json'))
     
     print('Finished Training')
     return logs
@@ -139,6 +140,7 @@ if __name__ == '__main__':
     parser.add_argument("--log_save_dir")
     parser.add_argument("--model_save_dir")
     parser.add_argument("--epochs", type=int)
+    parser.add_argument("--save_step", type=int, default=160)
     args = parser.parse_args()
     
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -210,5 +212,5 @@ if __name__ == '__main__':
     optimizer = optim.Adam(net.parameters())
     logs = train(model=net, trainloader=trainloader, testloader=testloader, batch_size=batch_size,
                  num_epoch=args.epochs, criterion=criterion, optimizer=optimizer, num_classes=4, log_step=20,
-                 classes=classes, device=device, model_save_dir=args.model_save_dir, log_save_dir=args.log_save_dir)
+                 classes=classes, device=device, model_save_dir=args.model_save_dir, log_save_dir=args.log_save_dir, save_step=args.save_step)
 
