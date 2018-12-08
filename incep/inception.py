@@ -208,6 +208,7 @@ if __name__ == '__main__':
 
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(net.parameters())
-    logs = train(net, trainloader, testloader, batch_size, args.epochs, criterion, optimizer, num_classes=4, log_step=20,
+    logs = train(model=net, trainloader=trainloader, testloader=testloader, batch_size=batch_size,
+                 num_epoch=args.epochs, criterion=criterion, optimizer=optimizer, num_classes=4, log_step=20,
                  device=device, model_save_dir=args.model_save_dir, log_save_dir=args.log_save_dir)
 
