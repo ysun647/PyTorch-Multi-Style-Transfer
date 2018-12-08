@@ -185,7 +185,7 @@ def train(model, trainloader, testloader, batch_size, num_epoch, criterion, opti
 
 
 
-epoch = 200
+epoch = 30
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(net.parameters())
