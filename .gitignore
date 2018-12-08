@@ -18,7 +18,8 @@ experiments/models/*
 *.model
 draft.py
 Classification_draft.ipynb
-
+inception/log_Incep_no_pre.json
+*.pt
 # C extensions
 *.so
 
