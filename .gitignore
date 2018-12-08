@@ -11,7 +11,7 @@ test/_trial_temp/*
 
 # data files
 *.zip
-
+incep/traditional_*_neural_*
 #model
 experiments/models/*
 *.jpg
