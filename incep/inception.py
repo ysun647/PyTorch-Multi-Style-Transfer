@@ -210,5 +210,5 @@ if __name__ == '__main__':
     optimizer = optim.Adam(net.parameters())
     logs = train(model=net, trainloader=trainloader, testloader=testloader, batch_size=batch_size,
                  num_epoch=args.epochs, criterion=criterion, optimizer=optimizer, num_classes=4, log_step=20,
-                 device=device, model_save_dir=args.model_save_dir, log_save_dir=args.log_save_dir)
+                 classes=classes, device=device, model_save_dir=args.model_save_dir, log_save_dir=args.log_save_dir)
 
