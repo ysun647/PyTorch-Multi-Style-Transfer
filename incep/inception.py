@@ -138,6 +138,7 @@ if __name__ == '__main__':
     parser.add_argument("--neural_aug", type=int, default=0)
     parser.add_argument("--log_save_dir")
     parser.add_argument("--model_save_dir")
+    parser.add_argument("--epochs", type=int)
     args = parser.parse_args()
     
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -149,7 +150,6 @@ if __name__ == '__main__':
     use_parallel = True
     use_gpu = True
     num_output = 4
-    epoch = 30
     
     pre_data_transforms = transforms.Compose([
         transforms.Resize(input_shape),
@@ -208,6 +208,6 @@ if __name__ == '__main__':
 
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(net.parameters())
-    logs = train(net, trainloader, testloader, batch_size, epoch, criterion, optimizer, num_classes=4, log_step=20,
+    logs = train(net, trainloader, testloader, batch_size, args.epochs, criterion, optimizer, num_classes=4, log_step=20,
                  device=device, model_save_dir=args.model_save_dir, log_save_dir=args.log_save_dir)
 
