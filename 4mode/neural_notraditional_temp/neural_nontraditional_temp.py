@@ -24,8 +24,8 @@ batch_size = 64
 # scale = 360
 use_parallel = True
 use_gpu = True
-epochs = 100
 num_output = 4
+epoch = 30
 
 pre_data_transforms = transforms.Compose([
         transforms.Resize(input_shape),
@@ -208,8 +208,6 @@ def train(model, trainloader, testloader, batch_size, num_epoch, criterion, opti
     
     print('Finished Training')
     return logs
-
-epoch = 2
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(net.parameters())
