@@ -17,7 +17,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 data_dir = "/data/dataset-of-4"
 
-data_cat = ('train', 'train-after', 'val')
+data_cat = ('train', 'train-after-10000', 'val')
 
 input_shape = (299, 299)
 batch_size = 64
