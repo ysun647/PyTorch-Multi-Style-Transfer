@@ -1,16 +1,10 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.utils.model_zoo as model_zoo
-
 import torchvision
 import torchvision.transforms as transforms
 from torchvision import datasets
-
 from os import path
-
-# import matplotlib.pyplot as plt
-import numpy as np
 import torch.optim as optim
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -211,9 +205,7 @@ def train(model, trainloader, testloader, batch_size, num_epoch, criterion, opti
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(net.parameters())
-
-
-logs = train(net, trainloader, testloader, batch_size, epoch, criterion, optimizer, num_classes = 4, log_step=20, device=device)
+logs = train(net, trainloader, testloader, batch_size, epoch, criterion, optimizer, num_classes=4, log_step=20, device=device)
 
 
 # # print(logs)
