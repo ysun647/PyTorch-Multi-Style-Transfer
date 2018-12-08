@@ -79,8 +79,8 @@ trainloader, testloader = dataloaders[train_after], dataloaders[val]
 
 classes = image_datasets[train_before].classes
 
-print("The number of data before augumentation: {}".format(len(image_datasets["train"])))
-print("The number of data after neural augumentation: {}".format(len(image_datasets['train-after'])))
+print("The number of data before augumentation: {}".format(len(image_datasets[train_before])))
+print("The number of data after neural augumentation: {}".format(len(image_datasets[train_after])))
 
 net = torchvision.models.inception_v3(pretrained=False, aux_logits = False, num_classes=num_output)
 
