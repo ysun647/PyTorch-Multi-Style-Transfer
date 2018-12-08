@@ -6,7 +6,6 @@ import os
 import random
 from datetime import datetime
 
-
 def transfer_single_image(source_img, style_img, target_img, model_path='21styles.model'):
     content_image = tensor_load_rgbimage(source_img, size=512, keep_asp=True).unsqueeze(0)
     style = tensor_load_rgbimage(style_img, size=512).unsqueeze(0)
@@ -27,7 +26,6 @@ def transfer_single_image(source_img, style_img, target_img, model_path='21style
     output = style_model(content_image)
     tensor_save_bgrimage(output.data[0], target_img, False)
 
-
 def transfer_multi_image(source_dir, style_dir, target_dir, num, model_path, print_every=20):
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
@@ -37,11 +35,9 @@ def transfer_multi_image(source_dir, style_dir, target_dir, num, model_path, pri
         if not os.path.isdir(label_dir):continue
         label_tgt_dir = os.path.join(target_dir, label)
         os.makedirs(label_tgt_dir)
-        
         for img in os.listdir(label_dir):
             if not img.endswith(".png"): continue
-            
-            style_imgs = random.sample(os.listdir(style_dir))
+            style_imgs = random.sample(os.listdir(style_dir), num)
             for style_img in style_imgs:
                 target_img = os.path.join(label_tgt_dir, img[:-4] + "--" + style_img[:-4] + "--" + id_generator(4) + ".png")
                 source_img = os.path.join(label_dir, img)
@@ -50,13 +46,6 @@ def transfer_multi_image(source_dir, style_dir, target_dir, num, model_path, pri
                                       style_img,
                                       target_img,
                                       model_path=model_path)
-            num -= 1
-            
-            if num % print_every == 0:
-                print("{} pics left; {}".format(str(num), datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-            
-            if num <= 0:
-                break
 
 
 if __name__ == "__main__":
@@ -83,7 +72,7 @@ if __name__ == "__main__":
           --style /home/ys3031/PyTorch-Multi-Style-Transfer/experiments/images/21styles \
           --tgt /data/cifar/augmented \
           --model_path /home/ys3031/PyTorch-Multi-Style-Transfer/experiments/models/cifar-1/Final_epoch_1_Fri_Dec__7_23:23:54_2018_1.0_5.0.model \
-          --num 5000
+          --num 10
         '''
         transfer_multi_image(source_dir=args.src,
                              style_dir=args.style,
