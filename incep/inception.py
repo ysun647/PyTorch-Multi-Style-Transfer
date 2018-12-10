@@ -229,7 +229,7 @@ if __name__ == '__main__':
     print("The number of data after neural augumentation: {}".format(len(image_datasets[train_after])))
     
 #    net = torchvision.models.inception_v3(pretrained=False, aux_logits=False, num_classes=num_output)
-    net = torchvision.models.inception_v3()
+    net = initialize_model("inception")
 
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(net.parameters())
