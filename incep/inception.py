@@ -145,7 +145,7 @@ def initialize_model(model_name, num_classes=4, feature_extract=True, use_pretra
         """ Inception v3
             Be careful, expects (299,299) sized images and has auxiliary output
             """
-        model_ft = models.inception_v3(pretrained=use_pretrained)
+        model_ft = torchvision.models.inception_v3(pretrained=use_pretrained)
         set_parameter_requires_grad(model_ft, feature_extract)
         # Handle the auxilary net
         num_ftrs = model_ft.AuxLogits.fc.in_features
@@ -153,6 +153,25 @@ def initialize_model(model_name, num_classes=4, feature_extract=True, use_pretra
         # Handle the primary net
         num_ftrs = model_ft.fc.in_features
         model_ft.fc = nn.Linear(num_ftrs,num_classes)
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        model_ft = model_ft.to(device)
+
+def optimize_process(model, feature_extract=True):
+    params_to_update = model.parameters()
+    print("Params to learn:")
+    if feature_extract:
+        params_to_update = []
+        for name, param in model.named_parameters():
+            if param.requires_grad == True:
+                params_to_update.append(param)
+                print("\t",name)
+    else:
+        for name, param in model.named_parameters():
+            if param.requires_grad == True:
+                print("\t",name)
+
+    optimizer = optim.Adam(params_to_update)
+    return optimizer
 
 
 if __name__ == '__main__':
@@ -232,7 +251,8 @@ if __name__ == '__main__':
     net = initialize_model("inception")
 
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(net.parameters())
+    # optimizer = optim.Adam(net.parameters())
+    optimizer = optimize_process(net)
     logs = train(model=net, trainloader=trainloader, testloader=testloader, batch_size=batch_size,
                  num_epoch=args.epochs, criterion=criterion, optimizer=optimizer, num_classes=4, log_step=20,
                  classes=classes, device=device, model_save_dir=args.model_save_dir, log_save_dir=args.log_save_dir, save_step=args.save_step)
