@@ -132,6 +132,29 @@ def train(model, trainloader, testloader, batch_size, num_epoch, criterion, opti
     print('Finished Training')
     return logs
 
+
+def set_parameter_requires_grad(model, feature_extracting):
+    if feature_extracting:
+        for param in model.parameters():
+            param.requires_grad = False
+
+
+def initialize_model(model_name, num_classes=4, feature_extract=True, use_pretrained=True):
+    model_ft = None
+    if model_name == "inception":
+        """ Inception v3
+            Be careful, expects (299,299) sized images and has auxiliary output
+            """
+        model_ft = models.inception_v3(pretrained=use_pretrained)
+        set_parameter_requires_grad(model_ft, feature_extract)
+        # Handle the auxilary net
+        num_ftrs = model_ft.AuxLogits.fc.in_features
+        model_ft.AuxLogits.fc = nn.Linear(num_ftrs, num_classes)
+        # Handle the primary net
+        num_ftrs = model_ft.fc.in_features
+        model_ft.fc = nn.Linear(num_ftrs,num_classes)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--traditional_aug", type=int, default=0)
@@ -205,7 +228,8 @@ if __name__ == '__main__':
     print("The number of data before augumentation: {}".format(len(image_datasets[train_before])))
     print("The number of data after neural augumentation: {}".format(len(image_datasets[train_after])))
     
-    net = torchvision.models.inception_v3(pretrained=False, aux_logits=False, num_classes=num_output)
+#    net = torchvision.models.inception_v3(pretrained=False, aux_logits=False, num_classes=num_output)
+    net = torchvision.models.inception_v3()
 
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(net.parameters())
