@@ -23,8 +23,10 @@ def train_one_epo(model, dataloader, criterion, optimizer, log_step, device="cud
         optimizer.zero_grad()
         
         # forward + backward + optimize
-        outputs = model(inputs)
-        loss = criterion(outputs, labels)
+        outputs, aux_outputs = model(inputs)
+        loss1 = criterion(outputs, labels)
+        loss2 = criterion(aux_outputs, labels)
+        loss = loss1 + 0.4*loss2
         loss.backward()
         optimizer.step()
         
@@ -155,6 +157,7 @@ def initialize_model(model_name, num_classes=4, feature_extract=True, use_pretra
         model_ft.fc = nn.Linear(num_ftrs,num_classes)
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         model_ft = model_ft.to(device)
+    return model_ft
 
 def optimize_process(model, feature_extract=True):
     params_to_update = model.parameters()
