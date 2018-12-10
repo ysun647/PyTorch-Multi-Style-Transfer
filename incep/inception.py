@@ -10,6 +10,7 @@ import argparse
 
 def train_one_epo(model, dataloader, criterion, optimizer, log_step, device="cuda"):
     logs = {"train_loss": [], "train_accu": []}
+    model.train()
     
     running_loss = 0.0
     correct = 0.0
@@ -30,7 +31,7 @@ def train_one_epo(model, dataloader, criterion, optimizer, log_step, device="cud
         loss.backward()
         optimizer.step()
         
-        _, predicted = torch.max(outputs.data, 1)
+        _, predicted = torch.max(outputs, 1)
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
         
@@ -52,7 +53,7 @@ def train_one_epo(model, dataloader, criterion, optimizer, log_step, device="cud
 
 def test(model, dataloader, num_classes, classes, batch=256, device="cuda"):
     model.to(device)
-    
+    model.eval()     
     logs = {"test_accu": []}
     
     correct = 0
@@ -67,7 +68,7 @@ def test(model, dataloader, num_classes, classes, batch=256, device="cuda"):
             images, labels = images.to(device), labels.to(device)
             
             outputs = model(images)
-            _, predicted = torch.max(outputs.data, 1)
+            _, predicted = torch.max(outputs, 1)
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
             
