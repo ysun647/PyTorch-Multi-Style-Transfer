@@ -1,4 +1,4 @@
-sudo python inception.py --epochs 80 \
+sudo python inception.py --epochs 30 \
  --traditional_aug 0 \
  --neural_aug 1 \
  --log_save_dir ./t_0_n_1_pretrained/log \
@@ -24,7 +24,7 @@ sudo python inception.py --epochs 4800 \
 
 # =========
 
-sudo python inception.py --epochs 80 \
+sudo python inception.py --epochs 30 \
  --traditional_aug 1 \
  --neural_aug 1 \
  --log_save_dir ./t_1_n_1_pretrained_tuneall/log \
@@ -40,7 +40,7 @@ sudo python inception.py --epochs 4800 \
  --save_step 160 \
  --feature_extract 0
 
-sudo python inception.py --epochs 80 \
+sudo python inception.py --epochs 30 \
  --traditional_aug 0 \
  --neural_aug 1 \
  --log_save_dir ./t_0_n_1_pretrained_tuneall/log \
