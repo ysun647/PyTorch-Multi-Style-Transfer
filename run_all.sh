@@ -20,8 +20,7 @@ sudo python inception.py --epochs 4800 \
  --log_save_dir ./t_0_n_0_pretrained/log \
  --model_save_dir ./t_0_n_0_pretrained/model \
  --save_step 160 \
- --feature_extract 1 \
- --save_step
+ --feature_extract 1
 
 # =========
 
@@ -55,7 +54,7 @@ sudo python inception.py --epochs 4800 \
  --log_save_dir ./t_0_n_0_pretrained_tuneall/log \
  --model_save_dir ./t_0_n_0_pretrained_tuneall/model \
  --feature_extract 0 \
- --save_step 1
+ --save_step 160
 
 
 
