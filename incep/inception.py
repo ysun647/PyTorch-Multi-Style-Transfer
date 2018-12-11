@@ -186,8 +186,12 @@ if __name__ == '__main__':
     parser.add_argument("--model_save_dir")
     parser.add_argument("--epochs", type=int)
     parser.add_argument("--save_step", type=int, default=160)
-    args = parser.parse_args()
+    parser.add_argument("--feature_extract", type=int)
     
+    args = parser.parse_args()
+
+    feature_extract = False if not args.feature_extract else True
+
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     data_dir = "/data/dataset-of-4"
     data_cat = ('train', 'train-after-10000', 'val')
@@ -252,11 +256,11 @@ if __name__ == '__main__':
     print("The number of data after neural augumentation: {}".format(len(image_datasets[train_after])))
     
 #    net = torchvision.models.inception_v3(pretrained=False, aux_logits=False, num_classes=num_output)
-    net = initialize_model("inception")
+    net = initialize_model("inception", feature_extract=feature_extract)
 
     criterion = nn.CrossEntropyLoss()
     # optimizer = optim.Adam(net.parameters())
-    optimizer = optimize_process(net)
+    optimizer = optimize_process(net, feature_extract=feature_extract)
     logs = train(model=net, trainloader=trainloader, testloader=testloader, batch_size=batch_size,
                  num_epoch=args.epochs, criterion=criterion, optimizer=optimizer, num_classes=4, log_step=20,
                  classes=classes, device=device, model_save_dir=args.model_save_dir, log_save_dir=args.log_save_dir, save_step=args.save_step)
