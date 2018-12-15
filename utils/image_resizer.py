@@ -7,7 +7,7 @@ if __name__ == "__main__":
     sample usage:
     python image_resizer.py \
         --src /data/stl10/splitted-stl/train-before/ \
-        --dst /home/ys3031/temp_data/train-before-resized \
+        --dst /home/ys3031/temp_data/train-before-resized
     '''
     parser = argparse.ArgumentParser()
     parser.add_argument("--src", type=str)
@@ -29,7 +29,7 @@ if __name__ == "__main__":
         for img in os.listdir(src_label_dir):
             src_img_path = os.path.join(src_label_dir, img)
             src_img = Image.open(src_img_path)
-            resized_img = src_img.resize((args.new_width, args.new_height), src_img.ANTIALIAS)
+            resized_img = src_img.resize((args.new_width, args.new_height))
             resized_img.save(os.path.join(dst_label_dir, img))
             
     
