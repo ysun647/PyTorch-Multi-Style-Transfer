@@ -118,7 +118,7 @@ if __name__ == "__main__":
                              )
     elif args.mode == 'multi_dir':
         '''
-        python msgnet_transfer.py \
+        sudo python msgnet_transfer.py \
             --mode multi_dir \
             --src /data/stl10/splitted-stl/train-before \
             --style /home/ys3031/PyTorch-Multi-Style-Transfer/experiments/images/21styles \
