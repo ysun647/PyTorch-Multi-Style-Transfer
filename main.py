@@ -124,5 +124,5 @@ if __name__ == "__main__":
     parser.add_argument("--train_sample_num", type=int)
     parser.add_argument("--val_sample_num", type=int)
     args = parser.parse_args()
-    
+
     main(args)

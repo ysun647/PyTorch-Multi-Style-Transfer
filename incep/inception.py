@@ -10,6 +10,8 @@ import argparse
 
 def train_one_epo(model, dataloader, criterion, optimizer, log_step, device="cuda"):
     logs = {"train_loss": [], "train_accu": []}
+
+    model.train()
     
     running_loss = 0.0
     correct = 0.0
@@ -23,12 +25,15 @@ def train_one_epo(model, dataloader, criterion, optimizer, log_step, device="cud
         optimizer.zero_grad()
         
         # forward + backward + optimize
-        outputs = model(inputs)
-        loss = criterion(outputs, labels)
+
+        outputs, aux_outputs = model(inputs)
+        loss1 = criterion(outputs, labels)
+        loss2 = criterion(aux_outputs, labels)
+        loss = loss1 + 0.4*loss2
         loss.backward()
         optimizer.step()
         
-        _, predicted = torch.max(outputs.data, 1)
+        _, predicted = torch.max(outputs, 1)
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
         
@@ -50,7 +55,7 @@ def train_one_epo(model, dataloader, criterion, optimizer, log_step, device="cud
 
 def test(model, dataloader, num_classes, classes, batch=256, device="cuda"):
     model.to(device)
-    
+    model.eval()     
     logs = {"test_accu": []}
     
     correct = 0
@@ -65,7 +70,7 @@ def test(model, dataloader, num_classes, classes, batch=256, device="cuda"):
             images, labels = images.to(device), labels.to(device)
             
             outputs = model(images)
-            _, predicted = torch.max(outputs.data, 1)
+            _, predicted = torch.max(outputs, 1)
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
             
@@ -117,21 +122,62 @@ def train(model, trainloader, testloader, batch_size, num_epoch, criterion, opti
         print("****************** Begin training epoch: {} ********************".format(epoch + 1))
         
         train_logs = train_one_epo(model, trainloader, criterion, optimizer, log_step, device=device)
+        
+        test_logs = test(model, testloader, num_classes, classes=classes, device=device)
+        for k, v in train_logs.items():
+            logs["trn_metrics"][k].append(v)
+            
+        for k, v in test_logs.items():
+            logs["tst_metrics"][k].append(v)
+            
         if (epoch + 1) % save_step == 0:
-            test_logs = test(model, testloader, num_classes, classes=classes, device=device)
-            
             save_model(model, os.path.join(model_save_dir, "ANet_no_pre_{}.pt".format(epoch)))
-            
-            for k, v in train_logs.items():
-                logs["trn_metrics"][k].append(v)
-            
-            for k, v in test_logs.items():
-                logs["tst_metrics"][k].append(v)
-            
+
             save_log(logs, os.path.join(log_save_dir, 'log_ANet_no_pre.json'))
     
     print('Finished Training')
     return logs
+
+def set_parameter_requires_grad(model, feature_extracting):
+    if feature_extracting:
+        for param in model.parameters():
+            param.requires_grad = False
+
+
+def initialize_model(model_name, num_classes=4, feature_extract=True, use_pretrained=True):
+    model_ft = None
+    if model_name == "inception":
+        """ Inception v3
+            Be careful, expects (299,299) sized images and has auxiliary output
+            """
+        model_ft = torchvision.models.inception_v3(pretrained=use_pretrained)
+        set_parameter_requires_grad(model_ft, feature_extract)
+        # Handle the auxilary net
+        num_ftrs = model_ft.AuxLogits.fc.in_features
+        model_ft.AuxLogits.fc = nn.Linear(num_ftrs, num_classes)
+        # Handle the primary net
+        num_ftrs = model_ft.fc.in_features
+        model_ft.fc = nn.Linear(num_ftrs,num_classes)
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        model_ft = model_ft.to(device)
+    return model_ft
+
+def optimize_process(model, feature_extract=True):
+    params_to_update = model.parameters()
+    print("Params to learn:")
+    if feature_extract:
+        params_to_update = []
+        for name, param in model.named_parameters():
+            if param.requires_grad == True:
+                params_to_update.append(param)
+                print("\t",name)
+    else:
+        for name, param in model.named_parameters():
+            if param.requires_grad == True:
+                print("\t",name)
+
+    optimizer = optim.Adam(params_to_update)
+    return optimizer
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -141,8 +187,13 @@ if __name__ == '__main__':
     parser.add_argument("--model_save_dir")
     parser.add_argument("--epochs", type=int)
     parser.add_argument("--save_step", type=int, default=160)
-    args = parser.parse_args()
+    parser.add_argument("--feature_extract", type=int)
     
+    args = parser.parse_args()
+
+    feature_extract = False if not args.feature_extract else True
+
+
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     data_dir = "/data/dataset-of-4"
     data_cat = ('train', 'train-after-10000', 'val')
@@ -159,8 +210,7 @@ if __name__ == '__main__':
     
     pre_image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x), pre_data_transforms) for x in data_cat}
     pre_dataloaders = {x: torch.utils.data.DataLoader(pre_image_datasets[x], batch_size=batch_size,
-                                                      shuffle=True, num_workers=4) for x in data_cat}
-    
+                                                      shuffle=True, num_workers=4) for x in data_cat}    
     train_before, train_after, val = data_cat
     
     pre_trainloader, pre_testloader = pre_dataloaders[train_after], pre_dataloaders[val]
@@ -205,11 +255,13 @@ if __name__ == '__main__':
     
     print("The number of data before augumentation: {}".format(len(image_datasets[train_before])))
     print("The number of data after neural augumentation: {}".format(len(image_datasets[train_after])))
-    
-    net = torchvision.models.inception_v3(pretrained=False, aux_logits=False, num_classes=num_output)
+
+#    net = torchvision.models.inception_v3(pretrained=False, aux_logits=False, num_classes=num_output)
+    net = initialize_model("inception", feature_extract=feature_extract)
 
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(net.parameters())
+    # optimizer = optim.Adam(net.parameters())
+    optimizer = optimize_process(net, feature_extract=feature_extract)
     logs = train(model=net, trainloader=trainloader, testloader=testloader, batch_size=batch_size,
                  num_epoch=args.epochs, criterion=criterion, optimizer=optimizer, num_classes=4, log_step=20,
                  classes=classes, device=device, model_save_dir=args.model_save_dir, log_save_dir=args.log_save_dir, save_step=args.save_step)
