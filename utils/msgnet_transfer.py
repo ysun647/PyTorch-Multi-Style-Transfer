@@ -70,7 +70,7 @@ def transfer_multi_dir(source_dir, style_dir, target_dir, model_path, suffix='pn
                 transfer_single_image(
                     source_img=os.path.join(src_label_dir, src_img),
                     style_img=os.path.join(style_dir, style_img),
-                    target_img=os.path.join(target_dir, target_img),
+                    target_img=os.path.join(target_dir, label, target_img),
                     model_path=model_path
                 )
             i += 1
@@ -116,10 +116,10 @@ if __name__ == "__main__":
     elif args.mode == 'multi_dir':
         '''
         python msgnet_transfer.py \
-            --model multi_dir \
+            --mode multi_dir \
             --src /data/stl10/splitted-stl/train-before \
             --style /home/ys3031/PyTorch-Multi-Style-Transfer/experiments/images/21styles \
-            --tgt /data/stl10/splitted-stl/train-after \
+            --tgt /home/ys3031/temp_data/train-after \
             --model_path /home/ys3031/PyTorch-Multi-Style-Transfer/experiments/models/object-model/Final_epoch_1_Sat_Dec_15_19:30:18_2018_1.0_5.0.model \
             --suffix png \
             --print_every 5
