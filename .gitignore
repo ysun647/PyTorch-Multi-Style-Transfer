@@ -8,21 +8,10 @@ config.py
 models/r_net/mysql_test.py
 models/r-net/mysql_test.py
 test/_trial_temp/*
-
-# data files
-*.zip
+t_*_n_*
+tuneall/*
+tunepartial/*
 incep/traditional_*_neural_*
-#model
-experiments/models/*
-*.jpg
-*.model
-draft.py
-Classification_draft.ipynb
-inception/log_Incep_no_pre.json
-*.pt
-# C extensions
-*.so
-
 # Distribution / packaging
 .Python
 virenv/*

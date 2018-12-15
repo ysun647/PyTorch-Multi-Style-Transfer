@@ -34,7 +34,7 @@ if __name__ == "__main__":
         os.makedirs(os.path.join(args.dst, args.val_name, label_name))
         i = 0
         for file in os.listdir(src):
-            if not file.endswith(".jpg"):
+            if not file.endswith(".png"):
                 continue
             rand = random.random()
             if rand < args.train_ratio:
