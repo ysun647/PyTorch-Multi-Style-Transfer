@@ -5,7 +5,7 @@ import os
 if __name__ == "__main__":
     '''
     sample usage:
-    python data_organizer.py \
+    python image_resizer.py \
         --src /data/stl10/splitted-stl/train-before/ \
         --dst /home/ys3031/temp_data/train-before-resized \
     '''
