@@ -22,7 +22,7 @@ if __name__ == '__main__':
     os.makedirs(args.dst, exist_ok=True)
     
     for img in args.src:
-        if not img.endswith(parser.suffix):
+        if not img.endswith(args.suffix):
             continue
             
         rand = random.random()
