@@ -10,7 +10,6 @@ import argparse
 
 def train_one_epo(model, dataloader, criterion, optimizer, log_step, device="cuda"):
     logs = {"train_loss": [], "train_accu": []}
-
     model.train()
     
     running_loss = 0.0
@@ -25,7 +24,6 @@ def train_one_epo(model, dataloader, criterion, optimizer, log_step, device="cud
         optimizer.zero_grad()
         
         # forward + backward + optimize
-
         outputs, aux_outputs = model(inputs)
         loss1 = criterion(outputs, labels)
         loss2 = criterion(aux_outputs, labels)
@@ -132,11 +130,11 @@ def train(model, trainloader, testloader, batch_size, num_epoch, criterion, opti
             
         if (epoch + 1) % save_step == 0:
             save_model(model, os.path.join(model_save_dir, "ANet_no_pre_{}.pt".format(epoch)))
-
             save_log(logs, os.path.join(log_save_dir, 'log_ANet_no_pre.json'))
     
     print('Finished Training')
     return logs
+
 
 def set_parameter_requires_grad(model, feature_extracting):
     if feature_extracting:
@@ -179,6 +177,7 @@ def optimize_process(model, feature_extract=True):
     optimizer = optim.Adam(params_to_update)
     return optimizer
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--traditional_aug", type=int, default=0)
@@ -192,7 +191,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     feature_extract = False if not args.feature_extract else True
-
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     data_dir = "/data/dataset-of-4"
@@ -210,7 +208,8 @@ if __name__ == '__main__':
     
     pre_image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x), pre_data_transforms) for x in data_cat}
     pre_dataloaders = {x: torch.utils.data.DataLoader(pre_image_datasets[x], batch_size=batch_size,
-                                                      shuffle=True, num_workers=4) for x in data_cat}    
+                                                      shuffle=True, num_workers=4) for x in data_cat}
+    
     train_before, train_after, val = data_cat
     
     pre_trainloader, pre_testloader = pre_dataloaders[train_after], pre_dataloaders[val]
@@ -255,7 +254,7 @@ if __name__ == '__main__':
     
     print("The number of data before augumentation: {}".format(len(image_datasets[train_before])))
     print("The number of data after neural augumentation: {}".format(len(image_datasets[train_after])))
-
+    
 #    net = torchvision.models.inception_v3(pretrained=False, aux_logits=False, num_classes=num_output)
     net = initialize_model("inception", feature_extract=feature_extract)
 
