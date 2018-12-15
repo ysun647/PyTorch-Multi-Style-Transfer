@@ -67,6 +67,9 @@ def transfer_multi_dir(source_dir, style_dir, target_dir, model_path, suffix='pn
                 continue
             for style_img in os.listdir(style_dir):
                 target_img = id_generator(4) + '-' + src_img[:-4] + '-' + style_img[:-4] + '.' + suffix
+                print("source image {}".format(os.path.join(src_label_dir, src_img)))
+                print("style image {}".format(os.path.join(style_dir, style_img)))
+                print("target image {}".format(os.path.join(target_dir, label, target_img)))
                 transfer_single_image(
                     source_img=os.path.join(src_label_dir, src_img),
                     style_img=os.path.join(style_dir, style_img),
