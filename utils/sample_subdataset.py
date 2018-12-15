@@ -21,15 +21,13 @@ if __name__ == '__main__':
     
     os.makedirs(args.dst, exist_ok=True)
     
-    for img in args.src:
-        print(img)
+    for img in os.listdir(args.src):
         if not img.endswith(args.suffix):
             print("found non {} file!".format(args.suffix))
             continue
             
         rand = random.random()
         if rand < args.sample_ratio:
-            print("got it!")
             os.system("sudo cp {src_img} {tgt_img}".format(
                 src_img=os.path.join(args.src, img),
                 tgt_img=os.path.join(args.dst, img)
