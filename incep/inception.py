@@ -142,7 +142,7 @@ def set_parameter_requires_grad(model, feature_extracting):
             param.requires_grad = False
 
 
-def initialize_model(model_name, num_classes=4, feature_extract=True, use_pretrained=True):
+def initialize_model(model_name, num_classes=10, feature_extract=True, use_pretrained=True):
     model_ft = None
     if model_name == "inception":
         """ Inception v3
@@ -193,15 +193,15 @@ if __name__ == '__main__':
     feature_extract = False if not args.feature_extract else True
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    data_dir = "/data/dataset-of-4"
-    data_cat = ('train', 'train-after-10000', 'val')
-    
+    data_dir = "/data/stl10/splitted-stl"
+#    data_cat = ('train', 'train-after-10000', 'val')
+    data_cat = ('train_before', 'val')
     input_shape = (299, 299)
     batch_size = 64
     use_parallel = True
     use_gpu = True
-    num_output = 4
-    
+#    num_output = 4
+    num_output = 10
     pre_data_transforms = transforms.Compose([
         transforms.Resize(input_shape),
         transforms.ToTensor()])
@@ -262,6 +262,6 @@ if __name__ == '__main__':
     # optimizer = optim.Adam(net.parameters())
     optimizer = optimize_process(net, feature_extract=feature_extract)
     logs = train(model=net, trainloader=trainloader, testloader=testloader, batch_size=batch_size,
-                 num_epoch=args.epochs, criterion=criterion, optimizer=optimizer, num_classes=4, log_step=20,
+                 num_epoch=args.epochs, criterion=criterion, optimizer=optimizer, num_classes=10, log_step=20,
                  classes=classes, device=device, model_save_dir=args.model_save_dir, log_save_dir=args.log_save_dir, save_step=args.save_step)
 
