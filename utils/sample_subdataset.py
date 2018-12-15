@@ -22,6 +22,7 @@ if __name__ == '__main__':
     os.makedirs(args.dst, exist_ok=True)
     
     for img in args.src:
+        print(img)
         if not img.endswith(args.suffix):
             print("found non {} file!".format(args.suffix))
             continue
