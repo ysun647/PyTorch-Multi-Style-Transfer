@@ -1,19 +1,6 @@
 from PIL import Image
 import argparse
 import os
-import random
-
-old = '/Users/yiming/Downloads/houzi.png'
-new = '/Users/yiming/Downloads/niao-new.png'
-
-# basewidth = 300
-img = Image.open(old)
-# wpercent = (basewidth/float(img.size[0]))
-# hsize = int((float(img.size[1])*float(wpercent)))
-img = img.resize((2000,1000), Image.ANTIALIAS)
-img.save(new)
-
-
 
 if __name__ == "__main__":
     '''
